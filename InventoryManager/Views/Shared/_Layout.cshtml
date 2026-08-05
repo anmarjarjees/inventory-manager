@@ -1,9 +1,34 @@
-﻿<!DOCTYPE html>
+﻿@* 
+_Layout.cshtml:
+***************
+This file defines the shared layout for ASP.NET Core MVC Views.
+
+Instead of repeating the same HTML structure (navigation, CSS references, footer, JavaScript)
+in every View, MVC allows us to define it once here.
+
+Individual Views insert their content through:
+   
+    > @RenderBody()
+
+Example:
+ >> Views/Home/Index.cshtml
+    >> _Layout.cshtml
+        >> Complete HTML page
+*@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - InventoryManager</title>
+    @* 
+        Updating the main website title: 
+        ********************************
+        - Project name: InventoryManager
+        - Application name: Inventory Manager 
+
+        Update from the technical name "InventoryManager" to a user-friendly name "Inventory Manager"
+    *@
+    <title>@ViewData["Title"] - Inventory Manager</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/InventoryManager.styles.css" asp-append-version="true" />
@@ -12,7 +37,33 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">InventoryManager</a>
+                @* 
+                    Update navbar brand name: InventoryManager => Inventory Manager
+                *@
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Inventory Manager</a>
+                @* 
+                    ASP.NET Core Tag Helpers:
+                    *************************
+                    Attributes such as:
+                        > asp-controller="Home"
+                        > asp-action="Index"
+
+                    - Are not normal HTML attributes
+                    - They are processed on the server by ASP.NET Core before the HTML page is sent to the browser
+                    - They generate the correct URL based on MVC routing conventions
+
+                    Example:
+                            asp-controller="Home"
+                            asp-action="Index"
+
+                    generates a link to: /Home/Index
+
+                    So the browser never receives asp-controller!
+                    It receive normal HTML: href="/Home/Index"
+                    
+                    Simply:
+                    The link calls the "Index" action method from the "Home"" controller.
+                  *@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -22,9 +73,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
+                        @*
+                            Privacy link removed:
+
+                            The default MVC template creates a Privacy page.
+                            Since our application does not currently need this page,
+                            we removed the navigation link.
+
+                            The Privacy View and Controller action can also be removed
+                            when cleaning a production application.
+
+                            For this educational project, I will keep template examples
+                            temporarily when they help explain MVC concepts.
+                        *@
+                        @* <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        </li> *@
                     </ul>
                 </div>
             </div>
@@ -33,14 +97,31 @@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
+            @* 
+            RenderBody():
+            *************
+            - It is a built-in Razor Layout method provided by ASP.NET Core MVC
+            - This is where the specific content of each MVC View is inserted
+
+            Example:
+                > The content of Views/Home/Index.cshtml
+                > will be rendered inside this location where the RenderBody() is called
+
+            This demonstrates one of the most important MVC concepts
+            *@
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - InventoryManager - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            @* Update the footer text (commenting the template code): *@
+            @* &copy; 2026 - InventoryManager - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
+            &copy; 2026 - Inventory Manager
         </div>
     </footer>
+    @* 
+    We don't modify these template-generated lines as they are needed
+    *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -1,8 +1,79 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@*
+    Razor Comments:
+    ***************
+    - are server-side comments
+    - are removed during rendering 
+    - are NOT sent to the browser's HTML output
+
+    Use Razor comments for notes and explanations inside .cshtml files
+*@
+
+@* 
+    The home page "Index.cshtml" is the application's landing page.
+
+    This page introduces the Inventory Manager project
+    before we add the actual inventory functionality. 
+*@
+
+@{
+    /*
+     * ViewData:
+     * *********
+     * ViewData is a dictionary provided by ASP.NET Core MVC.
+     *
+     * It allows a Controller or View to pass small pieces of data
+     * to another part of the MVC application.
+     *
+     * In this case, the shared layout (_Layout.cshtml)
+     * reads the "Title" value and displays it as the browser page title.
+     */
+    ViewData["Title"] = "Inventory Manager";
 }
 
+@*
+    Bootstrap classes are used to style this view.
+    Bootstrap is included by the default ASP.NET Core MVC template.
+*@
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    @*
+    Bootstrap display-4 class applies a larger display heading style to this element
+    Link: https://getbootstrap.com/docs/5.3/content/typography/#display-headings
+    *@
+    <h1 class="display-4">Inventory Manager</h1>
+    <p>
+        A professional ASP.NET Core MVC (.NET 8) educational project
+        demonstrating modern web application development.
+    </p>
+
+    <p>
+        This project demonstrates:
+    </p>
+
+    <ul class="list-unstyled">
+        <li>ASP.NET Core MVC</li>
+        <li>Entity Framework Core</li>
+        <li>SQL Server</li>
+        <li>Dependency Injection</li>
+        <li>Authentication and Authorization</li>
+        <li>Validation and Logging</li>
+    </ul>
+
+    @* 
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+   *@
+
+    @* Adding more custom contents below: *@
+    <p>Related Learning GitHub Projects:</p>
+    <div class="list-group">
+        <a href="https://github.com/anmarjarjees/dotnet-csharp-intro" class="list-group-item list-group-item-action" target="_blank" rel="noopener noreferrer">
+            .NET and C# Introduction
+        </a>
+        <a href="https://github.com/anmarjarjees/MovieMVC" class="list-group-item list-group-item-action" target="_blank" rel="noopener noreferrer">
+            ASP.NET Core MVC - Movie Tracker
+        </a>
+        <a href="https://github.com/anmarjarjees/music-gear-tracker" class="list-group-item list-group-item-action" target="_blank" rel="noopener noreferrer">
+            ASP.NET Core MVC - Music Gear Tracker
+        </a>
+        @* Notice adding rel="noopener noreferrer" for security best practice for external links *@
+    </div>
 </div>
