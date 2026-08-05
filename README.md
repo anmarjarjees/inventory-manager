@@ -202,7 +202,7 @@ The layout page controls the common application structure:
 
 Therefore, every View (.cshtml) that uses this layout automatically receives this shared structure.
 
-# The Privacy.cshtml
+### The Privacy.cshtml
 Another generated template page, so we have two options:
 - Option A:
     - Remove this page because our Inventory Manager doesn't need a privacy page yet
@@ -212,6 +212,38 @@ Another generated template page, so we have two options:
 
 However, The links to this page were commented but the page is kept unused/unreached just for reference. 
 
+## Step 2:
+Create the Product Model. The **Model** is one of the core components of the MVC pattern. In our inventory application, the product is the central piece of data. Before we can display, create, edit, or delete products, we first need a class that represents a product.
+
+A **Model** represents the application data and the object that the application works with. In our project, each object of type `Product` will represent one inventory item, for example:
+- Product: Laptop
+- Price: $899.00
+- Quantity: 6
+
+Later, Entity Framework Core will use this class as an Entity and map it to a SQL Server database table.
+
+Create the new class: **Models/Product.cs**
+
+Then review the code comments in `Models/Product.cs` for a detailed explanation of each part of the implementation.
+
+For learning purposes and quick demonstration, we will use four properties. These 4 properties:
+- Id
+- Name
+- Price
+- Quantity
+
+will be enough to demonstrate:
+- MVC Models
+- Properties
+- Entity Framework Core
+- CRUD operations
+- Model Binding
+- Validation
+
+In real-world applications, models usually contain more properties depending on business requirements.
+
+**Note:**
+This is Version 1 of our `Product` model. We intentionally keep it simple so we can focus on learning ASP.NET Core MVC fundamentals. As we continue building the application, we will gradually extend the model with additional features and validation when they support a new concept.
 ---
 ---
 
