@@ -1,4 +1,4 @@
-﻿// Unused Using auto-generated using statements:
+﻿// Unused auto-generated using statements removed:
 // using InventoryManager.Models; // no need as the file is already inside the "Models" folder
 // using Microsoft.AspNetCore.Http.HttpResults; // is not used anywhere in our code
 
@@ -85,14 +85,11 @@ namespace InventoryManager.Models
          * - Required Property => public required string Name 
          * 
          * For this educational project, we use "string.Empty"
-         * because it keeps the property "non-null"
-         * while allowing EF Core and MVC to create objects safely before validation happens.
+         * because it keeps the property non-null
+         * and avoids nullable reference warnings when objects are created before a value is assigned.
          * which means: "Initialize this property with an empty string instead of null."
          * 
          * Notice that other applications may choose different approaches depending on their design requirements.
-         * 
-         * because it keeps the property non-null while allowing us to create Product objects 
-         * without immediately providing a value.
          * 
          * Later, ASP.NET Core MVC validation will handle whether the user entered a meaningful product name.
          * 
@@ -142,7 +139,6 @@ namespace InventoryManager.Models
          * This allows the property to contain a null value when no description is provided.
          */
         public string? Description { get; set; }
-        public string? Description { get; set; }
 
         /*
          * Product Quantity:
@@ -161,7 +157,7 @@ namespace InventoryManager.Models
         /*
          * C# Auto-implemented Properties Concept Review:
          * **********************************************
-         * Properties allow controlled access to class data.
+         * Properties provide a controlled way to access and modify class data.
          * 
          * In C#, an auto-implemented property:
          * 

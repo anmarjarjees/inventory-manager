@@ -160,7 +160,7 @@ A simple model used by the default error page to display request information whe
 
 # Project Building Steps:
 
-## Step 1:
+## Step 1: Application foundation / template customization
 Creating our initial application layout and landing page for Inventory Manager by replacing the default ASP.NET Core MVC template content with our own application content.
 
 At this stage, we will customize the default generated pages:
@@ -212,7 +212,7 @@ Another generated template page, so we have two options:
 
 However, The links to this page were commented but the page is kept unused/unreached just for reference. 
 
-## Step 2:
+## Step 2: Create the Model
 Create the Product Model. The **Model** is one of the core components of the MVC pattern. In our inventory application, the product is the central piece of data. Before we can display, create, edit, or delete products, we first need a class that represents a product.
 
 A **Model** represents the application data and the object that the application works with. In our project, each object of type `Product` will represent one inventory item, for example:
@@ -244,6 +244,119 @@ In real-world applications, models usually contain more properties depending on 
 
 **Note:**
 This is Version 1 of our `Product` model. We intentionally keep it simple so we can focus on learning ASP.NET Core MVC fundamentals. As we continue building the application, we will gradually extend the model with additional features and validation when they support a new concept.
+
+## Step 3: Create the Controller
+Create/Add the Control file "`ProductController`" to our application:
+    > Controllers/ProductsController.cs
+
+This class will inherit from Controller:
+
+```C#
+public class ProductsController : Controller
+```
+
+In ASP.NET, the naming is important. Since our model is **Product**, which represents one product entity in our application, the controller follows the plural naming convention:
+```bash
+Product + Controller = ProductsController
+```
+The controller name is plural because ASP.NET Core MVC commonly uses plural resource names for controllers that manage collections of entities. For example:
+ - Customer => CustomersController
+ - Order => OrdersController
+ 
+ **Important Note: MVC Real Convention**
+ A controller:
+ - represents a user-facing area of functionality, not simply a database table/class
+ - usually manges one main resources/entity, but it can work with multiple models
+ 
+ So, in the normal ASP.NET Core MVC convention for controller manages that entity the "Model", however **"Controllers"** do not have to match every Model class one-to-one, so the relationship is NOT every Model must have a Controller!
+
+A real application may have:
+- Controllers
+    - HomeController.cs => Handles general website pages
+        - Index() => Home Page
+        - About() => About Page
+        - Contact() => Contact Page
+- ProductsController.cs => Handles product-related operations (Product management)
+    - Index() => Display all products
+    - Details() => Display one product
+    - Create() => Add a product
+    - Edit() => Update a product
+    - Delete() => Delete a product
+- OrdersController.cs => Order management
+- CustomersController.cs => Customer management
+- AccountController.cs => Login/logout 
+
+ In our current project:
+ - We have: Models/Product.cs
+ - The user needs to:
+    - view products
+    - create products
+    - edit products
+    - delete products
+- So our natural controller is: ProductsController.cs
+
+That's why we can determine when to create a Controller based on whether users need to interact with a specific feature or resource. In CRUD applications, a controller commonly maps to an entity/model, using the plural entity name (Product => ProductsController).
+
+Notice that we kept the default controller "HomeController" as it's part of the default ASP.NET Core MVC template and has a different responsibility.
+
+The default "HomeController" is usually responsible for:
+Its responsibility is usually:
+- Application landing page
+- General pages
+- Static information pages
+- Error handling
+It is not meant to manage business data.
+
+As we saw in our example:
+- HomeController:
+    - Index() => Home page
+    - Privacy() => Privacy information
+    - Error() => Error page
+
+Also we don't need to rename the "HomeController" to be "InventoryManagerController" or "InventoryController"! Controller represents a feature/resource not the application name.
+
+**Our current structure of "InventoryManager" application:**
+- InventoryManager:
+    - Controllers
+        - HomeController.cs
+        - ProductsController.cs
+    - Models
+        - ErrorViewModel.cs
+        - Product.cs
+    - Views
+        - Home
+            - Index.cshtml
+            - Privacy.csthml
+        - Shared
+            - _Layout.cshtml
+    - Program.cs
+
+## Step 4,5, and 6 to be added...
+
+### Step 4: Create Views
+Create:
+- Views/Products/
+    - Index.cshtml
+    - Create.cshtml
+    - Edit.cshtml
+    - Details.cshtml
+    - Delete.cshtml
+
+Connect Controller actions to Views
+
+### Step 5: Add Entity Framework Core
+- DbContext
+- Database connection
+- Migrations
+- SQL Server
+
+### Step 6: Implement CRUD functionality
+- Create
+- Read
+- Update
+- Delete
+
+
 ---
 ---
 
