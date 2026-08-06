@@ -331,9 +331,48 @@ Also we don't need to rename the "HomeController" to be "InventoryManagerControl
             - _Layout.cshtml
     - Program.cs
 
-## Step 4,5, and 6 to be added...
+### Step 4: Create the First Razor View
+Create the first Razor View for the `ProductsController` and connect it to the controller's `Index()` action.
 
-### Step 4: Create Views
+We will create our first Razor View that corresponds to the `Index()` action method:
+```C#
+public IActionResult Index()
+{
+    return View();
+}
+```
+
+When ASP.NET Core MVC executes:
+```C#
+return View();
+```
+
+**MVC Convention:** 
+
+When an action method calls `return View();` without specifying a view name, ASP.NET Core MVC automatically looks for a Razor View that has the same name as the action method inside the corresponding controller's Views folder.
+
+In our application, MVC automatically looks for:
+```text
+    Views/
+        Products/
+            Index.cshtml
+```
+
+Therefore:
+
+```text
+    - ProductsController
+        - Index()
+            => Views/Products/Index.cshtml
+```
+
+**Steps:**
+1. Create a new `Products` folder inside the `Views` folder
+2. Create a new Razor View named `Index.cshtml`
+   *- Notice that the View name (`Index.cshtml`) matches the action method name (`Index()`), following the default MVC convention*
+3. Add simple placeholder content to verify that the View is working before implementing the database functionality
+
+### Step 5 *(to be added)*
 Create:
 - Views/Products/
     - Index.cshtml
@@ -344,18 +383,17 @@ Create:
 
 Connect Controller actions to Views
 
-### Step 5: Add Entity Framework Core
+### Step 6: Add Entity Framework Core *(to be added)*
 - DbContext
 - Database connection
 - Migrations
 - SQL Server
 
-### Step 6: Implement CRUD functionality
+### Step 7: Implement CRUD functionality *(to be added)*
 - Create
 - Read
 - Update
 - Delete
-
 
 ---
 ---

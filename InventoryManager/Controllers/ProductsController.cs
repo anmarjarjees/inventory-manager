@@ -23,7 +23,6 @@ namespace InventoryManager.Controllers
      * This controller is responsible for Product-related operations.
      */
 
-
     /*
      * Also as shown in the "HomeController",
      * Our custom controller class "ProductsController" must inherit from the "Controller" base class
@@ -57,7 +56,8 @@ namespace InventoryManager.Controllers
          * Index action:
          * *************
          * The default action method for this controller.
-         *
+         * By convention, this action is executed when users navigate to /Products.
+         * 
          * By MVC convention:
          * ******************
          * - URL:

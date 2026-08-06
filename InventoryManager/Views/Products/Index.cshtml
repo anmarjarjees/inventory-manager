@@ -1,0 +1,40 @@
+﻿@*
+    Views/Products/Index.cshtml:
+    ****************************
+
+    This Razor View corresponds to the Index() action method of ProductsController
+
+    By MVC convention:
+
+        - ProductsController
+                > Index()
+                    > returns this View:
+                        > Views/Products/Index.cshtml
+
+    This page will display the list of products retrieved from the SQL Server database using Entity Framework Core.
+*@
+
+@*
+For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    // Razor code block containing C# code:
+    // Setting the browser page title using the ViewData dictionary:
+    ViewData["Title"] = "Products";
+
+    /*
+     * - Based on code in the Shared/_Layout.cshtml:
+     *      
+     *      > <title>@ViewData["Title"] - Inventory Manager</title>
+     * 
+     * - The browser tab will display:
+     *      
+     *      > "Products - Inventory Manager"
+     */
+}
+
+@* Simple temporary HTML before adding BS classes: *@
+<h2>Products</h2>
+<p>This page will display all products stored in the inventory.</p>
+<p>Later in this project we will retrieve product data from SQL Server using Entity Framework Core.</p>
