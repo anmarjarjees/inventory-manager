@@ -76,5 +76,62 @@ namespace InventoryManager.Controllers
         {
             return View();
         } // Index()
+
+
+        /*
+         * HTTP GET: [HttpGet]
+         * URL: /Products/Details/{id}
+         *
+         *      > Displays information about a single product.
+         *      > The product ID is supplied through the URL.
+         *
+         * Example:
+         *      /Products/Details/5
+         *
+         * This action will retrieve the product
+         * from the SQL Server database using Entity Framework Core.
+         */
+        [HttpGet]
+        public IActionResult Details(int? id)
+        {
+            /*
+             * Defensive Programming:
+             * **********************
+             * The ID value comes from the URL.
+             *
+             * A user could manually navigate to:
+             *
+             *      /Products/Details
+             *
+             * In this case:
+             *      id = null
+             *
+             * We check this situation before continuing.
+             *
+             * Link: https://en.wikipedia.org/wiki/Defensive_programming
+             * Link: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404
+             */
+            // If no ID was attached to the URL => return HTTP 404 (Not Found)
+            if (id == null)
+            {
+                return NotFound();
+                /*
+                 * Link: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase.notfound
+                 * Link: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase.notfound?view=aspnetcore-10.0#microsoft-aspnetcore-mvc-controllerbase-notfound
+                 * */
+            }
+
+            /*
+             * Database retrieval will be added later:
+             *
+             * Example:
+             *      > var product = _context.Products.Find(id);
+             *
+             * Then we will pass the Product object to the View:
+             *      > return View(product);
+             */
+            return View();
+        } // Details (GET)
+
     } // class
 } // namespace

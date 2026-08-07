@@ -1,0 +1,28 @@
+﻿ @*
+    Views/Products/Details.cshtml:
+    *****************************
+    This Razor View corresponds to the Details() action method inside ProductsController.
+
+    MVC Convention:
+
+         -ProductsController
+                >> Details(int? id)
+                        >> Views/Products/Details.cshtml
+
+    Later, this page will display the information of one selected Product retrieved from the database.
+*@
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h2>Product Details</h2>
+
+<p>
+    This page will display the details of a single product.
+</p>
+
+<p>
+    Later in this project, the selected product will be retrieved
+    from the SQL Server database using Entity Framework Core.
+</p>

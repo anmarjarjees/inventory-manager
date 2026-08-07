@@ -331,7 +331,7 @@ Also we don't need to rename the "HomeController" to be "InventoryManagerControl
             - _Layout.cshtml
     - Program.cs
 
-### Step 4: Create the First Razor View
+## Step 4: Create the First Razor View
 Create the first Razor View for the `ProductsController` and connect it to the controller's `Index()` action.
 
 We will create our first Razor View that corresponds to the `Index()` action method:
@@ -372,16 +372,251 @@ Therefore:
    *- Notice that the View name (`Index.cshtml`) matches the action method name (`Index()`), following the default MVC convention*
 3. Add simple placeholder content to verify that the View is working before implementing the database functionality
 
-### Step 5 *(to be added)*
-Create:
-- Views/Products/
-    - Index.cshtml
-    - Create.cshtml
-    - Edit.cshtml
-    - Details.cshtml
-    - Delete.cshtml
-
 Connect Controller actions to Views
+
+## Step 5: Build the ProductsController CRUD Skeleton
+Build the CRUD action method skeleton for `ProductsController`.
+
+Before connecting our application to a database, we will build the standard MVC action methods that make up a typical CRUD controller.
+
+At this stage, these methods will only demonstrate the structure of a typical ASP.NET Core MVC controller. Database access and business logic will be added later using **Entity Framework Core**.
+
+Our controller will eventually contain:
+- `Index()` => Display all products
+- `Details()` => Display one product
+- `Create()` => Add a new product
+- `Edit()` => Update an existing product
+- `Delete()` => Delete a product
+
+**NOTE:**
+ Regarding the "CRUD" operation, These three methods (operations) `Create`, `Edit`, and `Delete` typically require two action methods:
+- **GET** => Display the form or confirmation page
+- **POST** => Process the submitted form
+
+This follows the standard ASP.NET Core MVC CRUD pattern.
+
+Our controller "ProductsController" will eventually contains:
+| Action | HTTP | Purpose |
+| - | - | -|
+| `Index()` | GET | Display all products |
+|-|-|-|
+| `Details(int id)` | GET | Display one product details |
+|-|-|-|
+| `Create()` | GET | Display the create form for adding a new product |
+| `Create(Product product)` | POST | Process the submitted form |
+|-|-|-|
+| `Edit(int id)` | GET | Retrieve the selected product and display it in the edit form |
+| `Edit(Product product)` | POST | Process/Submit the updated product |
+|-|-|-|
+| `Delete(int id)` | GET | Display the delete confirmation page |
+| `DeleteConfirmed(int id)` | POST | Delete the selected product |
+
+
+Notice that with Delete, we used two different action names: Delete(int id) and DeleteConfirmed(int id). The reason for that is because C# cannot distinguish these two methods as they have identical signatures:
+```C#
+Delete(int id)
+Delete(int id)
+```
+Even ASP.NET default scaffolding usually generates:
+```C#
+Delete(int id) // GET
+DeleteConfirmed(int id) // POST
+```
+
+and decorates it with:
+```C#
+[HttpPost]
+[ActionName("Delete")]
+```
+so the URL remains:
+```C#
+/Products/Delete/5
+```
+even though the method name is DeleteConfirmed.
+
+This idea leads to the MVC pattern:
+| Operation | GET receives | POST receives | Reason |
+| - | - | - | - | 
+| Index | nothing | - | Display all products |
+| Details | `id` | - | Need to know which product |
+| Create | nothing | `Product product` | User submits all product fields |
+| Edit | `id` | `Product product` | GET loads the product; POST submits the edited values |
+| Delete | `id` | `id` (or `Product`) | GET shows confirmation; POST performs deletion |
+
+Notice that when we create a new item, there is no ID on the GET request as there isn't an existing product yet. While for edit, for example, the browser asks to display the edit form for product with id #7 for example:
+```C#
+GET /Products/Edit/7
+```
+So the browser submits something like:
+```text
+Id = 7
+Name = Keyboard
+Price = 27
+Quantity = 12
+```
+Then ASP.NET Core's Model Binding creates:
+```C#
+Product product
+```
+Where:
+```C#
+product.Id = 5;
+product.Name = "Laptop";
+product.Price = 899;
+product.Quantity = 10;
+```
+So the POST method receives the entire object, not just the name.
+
+And same idea with delete:
+```C#
+GET /Products/Delete/7
+```
+ 
+The browser asks to display the confirmation page for product with id #7:
+The GET method:
+```C#
+Delete(int id)
+```
+
+So the POST method receives the ID again:
+```C#
+DeleteConfirmed(int id)
+```
+
+**The simple philosophy with CRUD methods:**
+- GET requests [Display] => **"Show me something"** = *identify which resource to display*
+- POST requests [Process] => **"Do something with my submitted data"** = *submit the data that the user entered or modified*
+
+| CRUD | GET | POST |
+| - | - | - |
+| Create | Show empty form | Save new product  |
+| Read | Show product(s) | - |
+| Update | Show edit form | Save changes |
+| Delete | Show confirmation | Delete the record |
+
+
+Adding these methods to our controller "ProductsController":
+```bash
+- Index() // GET
+- Details(int id) // GET
+
+- Create() // GET
+- Create(Product product) // POST
+
+- Edit(int id) // GET
+- Edit(int id, Product product) // POST
+
+- Delete(int id) // GET
+- DeleteConfirmed(int id) // POST
+```
+
+so moving forward, we will create the following actions:
+```C#
+Index()
+
+Details(int? id)
+
+[HttpGet]
+Create()
+
+[HttpPost]
+Create(Product product)
+
+[HttpGet]
+Edit(int? id)
+
+[HttpPost]
+Edit(Product product)
+
+[HttpGet]
+Delete(int? id)
+
+[HttpPost]
+DeleteConfirmed(int id)
+```
+
+**IMPORTANT NOTE**
+Pleas be advised that I used `Edit(Product product)` because it is a perfectly valid and commonly used ASP.NET Core MVC pattern for educational and many real-world applications. Later, we will introduce Microsoft's scaffolded pattern Edit(int id, Product product), which adds an additional safety check by verifying that the route ID matches the submitted model ID.
+
+For more details review my repo ["MovieMVC"](https://github.com/anmarjarjees/MovieMVC/tree/main)
+
+### Step 5.1: Details Action (GET)
+The Details action is responsible for displaying the detailed information of a single product.
+
+Unlike the Index() action, which displays a collection of products, the Details() action displays one specific product and for this reason, the application needs to know which product to display.
+
+**NOTE: The ID comes from routing, not from the form.**
+
+Therefore, the Details() action receives the product's ID as a route parameter:
+```C#
+public IActionResult Details(int? id)
+```
+
+Be advised that we use `int?` (nullable integer) instead of `int` because ID comes from the route parameter. In other words, the value of "id" is provided through MVC routing.
+
+Example:
+
+URL:
+```bash
+    /Products/Details/5
+```
+
+Routing extracts:
+```bash
+    id=5
+```
+
+Then MVC automatically passes this value to:
+```C#
+    Details(int? id)
+```
+
+Now because a user could also manually navigate to:
+```bash
+    /Products/Details
+```
+In this case, no **ID** is provided! So **ID** will be `null`.
+That's why using `int?` allows us to safely check for a missing ID before attempting to retrieve the product. We will actually use that ID to query EF Core.
+
+**Refer to our controller file "ProductsController" and review the code/comments of this action:**
+```C#
+public IActionResult Details(int? id)
+```
+
+After finishing this action method, we create the View of this method:
+```bash
+    Views/
+        Products/
+            Details.cshtml
+```
+
+This follows the MVC convention:
+```bash
+Controller:
+    ProductsController
+
+Action:
+    Details()
+
+View:
+    Views/Products/Details.cshtml
+```
+
+ASP.NET Core MVC automatically searches for a View with the same name as the action method.
+
+At this stage, the action only validates the incoming ID and returns the View. The database lookup will be introduced later after we add Entity Framework Core and connect the controller to the database.
+
+**Refer to the view "Details.cshtml"**
+
+### *(Next steps to be added:)*
+### Step 5.2: Create Action (GET) 
+### Step 5.3: Create Action (POST)
+Introducing:
+- Model Binding
+- [HttpPost]
+- [ValidateAntiForgeryToken]
+### Step 5.4: Edit Actions (GET + POST)
+### Step 5.5: Delete Actions (GET + POST)
 
 ### Step 6: Add Entity Framework Core *(to be added)*
 - DbContext
