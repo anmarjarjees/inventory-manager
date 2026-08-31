@@ -12,14 +12,14 @@
     This page displays the form for entering information for a new Product.
 
     At this stage:
-    - The form does not contain existing product data.
-    - The form does not save anything to the database.
-    - The POST action will be introduced in the next step.
+    - The form does not contain existing product data
+    - The form does not save anything to the database
+    - The POST action will be introduced later
 
     Link:  https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms
 *@
 
-@model InventoryManager.Models.Product // The view's model type is "Product" T
+@model InventoryManager.Models.Product // The view's model type is "Product"
 
 @{
     ViewData["Title"] = "Create Product";
@@ -315,66 +315,66 @@
             <span asp-validation-for="Description" class="text-danger"></span>
 
             @* 
-         NOTE ABOUT HTML5 VALIDATION ATTRIBUTES:
-         ***************************************
-         We do not necessarily need to manually duplicate validation rules in the Razor View,
-         by adding these HTML attributes (conditions):
-         - required
-         - maxlength = "100"
+             NOTE ABOUT HTML5 VALIDATION ATTRIBUTES:
+             ***************************************
+             We do not necessarily need to manually duplicate validation rules in the Razor View,
+             by adding these HTML attributes (conditions):
+             - required
+             - maxlength = "100"
  
-         For example, if our Product model contains:
+             For example, if our Product model contains:
          
-            [Required]
-            [StringLength(100)]
-            public string Name { get; set; }
+                [Required]
+                [StringLength(100)]
+                public string Name { get; set; }
 
-         > the validation rules are defined in the model.
+             > the validation rules are defined in the model.
 
-         ASP.NET Core MVC's validation system uses this model metadata.
+             ASP.NET Core MVC's validation system uses this model metadata.
 
-         The Input Tag Helper can then generate the appropriate HTML5 "data-val-*" validation attributes:
-         For example, validation metadata can result in generated attributes such as:
+             The Input Tag Helper can then generate the appropriate HTML5 "data-val-*" validation attributes:
+             For example, validation metadata can result in generated attributes such as:
 
-                    data-val="true"
-                    data-val-required="..."
-                    data-val-maxlength="..."
-                    data-val-maxlength-max="100"
+                        data-val="true"
+                        data-val-required="..."
+                        data-val-maxlength="..."
+                        data-val-maxlength-max="100"
 
-         This allows the validation rules to be defined centrally in the model 
-         instead of duplicating the same rules in multiple views.
+             This allows the validation rules to be defined centrally in the model 
+             instead of duplicating the same rules in multiple views.
 
-         NOTE:
-         *****
-         This does NOT mean that HTML5 attributes such as:
-           - required
-           - min
-           - max
-           - step
-           - type
+             NOTE:
+             *****
+             This does NOT mean that HTML5 attributes such as:
+               - required
+               - min
+               - max
+               - step
+               - type
 
-         are forbidden!
-         They can still be appropriate when they describe the HTML control or its browser-level behavior.
+             are forbidden!
+             They can still be appropriate when they describe the HTML control or its browser-level behavior.
 
-         However, we should avoid unnecessarily duplicating the same business/data validation rules in both:
-            1) the Model
-            2) the Razor View
+             However, we should avoid unnecessarily duplicating the same business/data validation rules in both:
+                1) the Model
+                2) the Razor View
 
-         The model should remain the central place for our application's validation rules.
+             The model should remain the central place for our application's validation rules.
         
-         So the summarized idea:
-         ***********************
-         1) Define model validation rules in the model 
-            when those rules describe the validity of the model's data.
+             So the summarized idea:
+             ***********************
+             1) Define model validation rules in the model 
+                when those rules describe the validity of the model's data.
 
-        2) Let ASP.NET Core MVC's Tag Helpers use the model metadata
-           to generate the appropriate form markup and validation attributes.
+            2) Let ASP.NET Core MVC's Tag Helpers use the model metadata
+               to generate the appropriate form markup and validation attributes.
 
-        3) Do not rely on client-side validation alone.
-           Server-side validation remains necessary because the client cannot be trusted.
+            3) Do not rely on client-side validation alone.
+               Server-side validation remains necessary because the client cannot be trusted.
 
-        This helps avoid unnecessarily duplicating the same validation rules in both the model and the Razor View.
+            This helps avoid unnecessarily duplicating the same validation rules in both the model and the Razor View.
 
-         Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation
+             Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation
         *@
         </div>
 
@@ -455,5 +455,3 @@
     Server-side validation remains necessary 
     because the server must never trust data simply because it passed validation in the browser.
 *@
-
-

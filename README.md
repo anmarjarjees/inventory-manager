@@ -764,9 +764,18 @@ public IActionResult Create(Product product)
 }
 ```
 
-**Second: Refer to the view "ProductsController.cs" and review the code/comments: Create POST Action**
+**Second: Refer to the controller "ProductsController.cs" and review the code/comments: Create POST Action**
 
-### Step 5.4: Edit Actions (GET + POST) *(to be added)*
+### Step 5.4: Edit Actions (GET + POST) 
+We will do it in two steps:
+1. Edit Action (GET)
+    - Creating the Edit.cshtml view for the editing form
+2. Edit Action (POST)
+    - Model Binding + Validation
+
+**First: Refer to the view "Edit.cs" and review the code/comments**
+**Second: Refer to the controller "ProductsController.cs" and review the code/comments: Edit GET Action**
+
 ### Step 5.5: Delete Actions (GET + POST) *(to be added)*
 ## Step 6: Add Entity Framework Core *(to be added)*
 - DbContext

@@ -234,7 +234,7 @@ namespace InventoryManager.Controllers
          * To summarize:
          * *************
          *  > [ValidateAntiForgeryToken] = Validates the antiforgery token on the server => in controller
-         *  > ASP.NET Core Form Tag Helper => Automatically generates an antiforgery token for POST for POST
+         *  > ASP.NET Core Form Tag Helper => Automatically generates an antiforgery token for POST form
          *      >> NO NEED FOR: @Html.AntiForgeryToken() = client-side token => in form
          *  > Used for POST actions that perform state-changing operations (Create, Edit, Update, Delete)
          *  > Helps protect against CSRF attacks
@@ -262,6 +262,48 @@ namespace InventoryManager.Controllers
             // Database code will be added later.
 
             return View(product);
+        }
+
+        /*
+         * HTTP GET: [HttpGet]
+         * URL: /Products/Edit/{id}
+         * 
+         *      > Displays the Edit form for an existing Product
+         *      > The product ID is supplied through the URL
+         *
+         * Example:
+         *      /Products/Edit/7
+         * 
+         * Provides:
+         *      id = 7
+         *
+         * At this stage, Entity Framework Core has not been implemented yet,
+         * so this action does not retrieve the Product from SQL Server yet.
+         *
+         * Later, Entity Framework Core will be used to:
+         * - find the Product by its ID
+         * - pass the existing Product to the Edit.cshtml view
+         *
+         * The Edit.cshtml view is strongly typed to:
+         *
+         *     > @model InventoryManager.Models.Product
+         *
+         * so it can display the Product's existing property values in the form controls.
+         */
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            // Defensive programming:
+            // If no ID was attached to the URL => return HTTP 404 (Not Found)
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Database retrieval will be added later using Entity Framework Core.
+
+            return View();
         }
     } // class
 } // namespace

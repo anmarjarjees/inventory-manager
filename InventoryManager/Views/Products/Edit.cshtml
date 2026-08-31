@@ -1,0 +1,97 @@
+﻿@*
+Views/Products/Edit.cshtml:
+***************************
+This Razor View corresponds to the Edit() GET action inside ProductsController.
+
+MVC Convention:
+***************
+    - ProductsController
+            >> Edit(int? id) [GET]
+                    >> Views/Products/Edit.cshtml
+
+This page displays the form used to edit an existing Product.
+
+Unlike the Create view, which displays a form for entering information for a new Product, 
+the Edit view is intended to display the current values of an existing Product 
+so that the user can modify them.
+
+The existing Product is supplied to this view through the view's model:
+
+    > @model InventoryManager.Models.Product
+
+The Input Tag Helpers can then use the Product model's current property values
+to populate the corresponding form controls.
+
+At this stage:
+- The Edit view contains the form structure and Product fields.
+- The GET action will be responsible for identifying the Product to edit
+  by its ID and eventually retrieving that Product.
+- The POST action will later receive the submitted Product data through
+  Model Binding.
+- Database retrieval and updating will be added when we introduce
+  Entity Framework Core.
+
+Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms
+*@
+
+@model InventoryManager.Models.Product  // The view's model type is "Product"
+
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+@*
+For more details and full explanations about the code, classes,
+Tag Helpers, Bootstrap classes, and attributes used in this view,
+please refer to the corresponding sections in Create.cshtml.
+*@
+
+<div class="text-center">
+    <h1 class="display-4">Edit a Product</h1>
+</div>
+
+<p>Update the information below for the current product.</p>
+
+<form asp-action="Edit" method="post">
+    <fieldset>
+        <legend>Product Information</legend>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger">
+        </div>
+
+        <div class="mb-3">
+            @* 1) Identifying the field: *@
+            <label asp-for="Name" class="form-label"></label>
+
+            @* 2) Creating/binding the input: *@
+            <input asp-for="Name" class="form-control" />
+
+            @* 3) Displaying validation errors for that property: *@
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label"></label>
+
+            <input asp-for="Price" class="form-control" />
+
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Quantity" class="form-label"></label>
+            <input asp-for="Quantity" class="form-control" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Update Product
+        </button>
+    </fieldset>
+</form>
