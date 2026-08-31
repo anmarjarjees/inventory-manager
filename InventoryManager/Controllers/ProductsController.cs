@@ -5,8 +5,13 @@
  * - using Microsoft.AspNetCore.Mvc;
  * The controller base class "Controller" is provided by ASP.NET Core MVC,
  * without this namespace, C# does not know what "Controller" means
+ * 
+ * -using InventoryManager.Models;
+ * We need to access the "Product" model when we submit the data to our database,
+ * so we need to use the "Model" folder that contains the "Product.cs"
  */
 using Microsoft.AspNetCore.Mvc;
+using InventoryManager.Models;
 
 namespace InventoryManager.Controllers
 {
@@ -90,6 +95,9 @@ namespace InventoryManager.Controllers
          *
          * This action will retrieve the product
          * from the SQL Server database using Entity Framework Core.
+         * 
+         * Notice the use of the ASP.NET annotation [HttpGet]
+         * [HttpGet] => used for GET request => Display/View/Read Data only
          */
         [HttpGet]
         public IActionResult Details(int? id)
@@ -133,5 +141,127 @@ namespace InventoryManager.Controllers
             return View();
         } // Details (GET)
 
+        /*
+         * HTTP GET: [HttpGet]
+         * URL: /Products/Create
+         *
+         * Displays the empty form used to create a new Product.
+         *
+         * This method is responsible for:
+         * - displaying the form.
+         * - No Product has been created yet.
+         * - No data is being saved to the database.
+         * - The POST action will process the submitted form later
+         */
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        /*
+         * HTTP POST: [HttpPost]
+         * URL: /Products/Create
+         * 
+         * This action handles the submitted Create Product form.
+         * 
+         * The Product object is populated automatically by ASP.NET Core MVC through Model Binding.
+         * 
+         * At this stage, we are only demonstrating form submission.
+         * Database saving will be added later when we introduce Entity Framework Core.
+         * 
+         * Notice the use of the ASP.NET annotation [HttpPost]
+         * [HttpPost] => Specifies that this action handles "HTTP POST" requests.
+         * 
+         * POST requests are commonly used for operations that submit data
+         * or cause a state change, such as Create, Edit, Update, or Delete.
+         * 
+         * -----------------------------------------------------------
+         * 
+         * CRUCIAL SECURITY NOTE: "Anti-Forgery" Protection:
+         * **************************************************
+         * The [ValidateAntiForgeryToken] attribute:
+         *  > Helps protect against CSRF (Cross-Site Request Forgery) attacks
+         *  > Validates that the request contains a valid antiforgery token generated for this application
+         * 
+         * NOTE:
+         * *****
+         * When using the ASP.NET Core Form Tag Helper with:
+         * 
+         *      > <form asp-action="Create" method="post">
+         * 
+         * ASP.NET Core automatically generates the antiforgery token for the form.
+         * 
+         * Therefore, we do not need to manually add:
+         * 
+         *      > @Html.AntiForgeryToken()
+         *      
+         * in this particular Razor form.
+         * 
+         * However, @Html.AntiForgeryToken() can be used 
+         * when an antiforgery token must be generated manually.
+         * 
+         * 
+         * How to code it:
+         * ***************
+         * We need to add/use [ValidateAntiForgeryToken] on all "POST" actions 
+         * that perform "State-Changing" operations:
+         * 
+         * - Create:
+         * 
+         *      [HttpPost]
+         *      [ValidateAntiForgeryToken]
+         *      public IActionResult Create(Product product)
+         *      
+         * 
+         * - Edit:
+         * 
+         *      [HttpPost]
+         *      [ValidateAntiForgeryToken]
+         *      public IActionResult Edit(Product product)
+         *      
+         * 
+         * - Delete:
+         * 
+         *      [HttpPost]
+         *      [ValidateAntiForgeryToken]
+         *      public IActionResult DeleteConfirmed(int id)
+         *      
+         * And also inside the <form> (Refer to the view pages):
+         *      
+         *      > @Html.AntiForgeryToken()
+         * 
+         * To summarize:
+         * *************
+         *  > [ValidateAntiForgeryToken] = Validates the antiforgery token on the server => in controller
+         *  > ASP.NET Core Form Tag Helper => Automatically generates an antiforgery token for POST for POST
+         *      >> NO NEED FOR: @Html.AntiForgeryToken() = client-side token => in form
+         *  > Used for POST actions that perform state-changing operations (Create, Edit, Update, Delete)
+         *  > Helps protect against CSRF attacks
+         * 
+         * To learn more about CSRF:
+         * Link: https://cybersecuritynews.com/cross-site-request-forgery/
+         * Link: https://owasp.org/www-community/attacks/csrf
+         * Link: https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/CSRF
+         * Link: https://en.wikipedia.org/wiki/Cross-site_request_forgery
+         * Link: https://www.cloudflare.com/learning/security/threats/cross-site-request-forgery/
+         * 
+         * Microsoft CSRF:
+         * Link: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.validateantiforgerytokenattribute?view=aspnetcore-10.0
+         * Link: https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0
+         */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Product product)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(product);
+            }
+
+            // Database code will be added later.
+
+            return View(product);
+        }
     } // class
 } // namespace

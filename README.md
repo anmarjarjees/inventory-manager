@@ -200,6 +200,15 @@ The layout page controls the common application structure:
 - JavaScript references
 - The location where individual View content is rendered
 
+It contains the shared application structure:
+- <html>
+- <head>
+- Bootstrap
+- navigation
+- @RenderBody()
+- footer
+- shared JavaScript
+
 Therefore, every View (.cshtml) that uses this layout automatically receives this shared structure.
 
 ### The Privacy.cshtml
@@ -608,23 +617,164 @@ At this stage, the action only validates the incoming ID and returns the View. T
 
 **Refer to the view "Details.cshtml"**
 
-### *(Next steps to be added:)*
 ### Step 5.2: Create Action (GET) 
-### Step 5.3: Create Action (POST)
-Introducing:
-- Model Binding
-- [HttpPost]
-- [ValidateAntiForgeryToken]
-### Step 5.4: Edit Actions (GET + POST)
-### Step 5.5: Delete Actions (GET + POST)
+We will only display the empty create form, we are not submitting data, using EF core, or saving anything to database yet.
+```bash
+- URL GET HTTP => /Products/Create
+    - ProductsController => Create() [GET HTTP Method]
+        - return View()
+            - Views/Products/Create.cshtml
+                - Display Empty product form
+```
 
-### Step 6: Add Entity Framework Core *(to be added)*
+### Step 5.3: Create Action (POST)
+The form product data will be submitted, so **"Model Binding"** will be introduced in this stage.
+
+Assume the form submits:
+```bash
+Name = Keyboard
+Price = 25.99
+Quantity = 23
+Description = Wireless Gaming keyboard
+```
+
+ASP.NET Core MVC's Model Binding system attempts to create and populate the Product parameter from the submitted form data:
+```C#
+product.Name
+product.Price
+product.Quantity
+product.Description
+```
+For example, the submitted form data can be bound to:
+    > Product product
+resulting in a Product object whose properties contain the submitted values.
+
+```bash
+- HTML Form 
+    >> Using HTTP POST
+        >> Create(Product product)
+            >> Model Binding
+                >> Product object
+```
+
+#### Model Binding:
+The term **"Model Binding"** refers to the ASP.NET Core MVC process that converts incoming HTTP request data into .NET objects and values that can be used by an action method.
+
+In our example:
+```C#
+[HttpPost]
+public IActionResult Create(Product product)
+```
+**The `Product` product parameter tells MVC that this action expects a `Product` object.**
+
+MVC's Model Binding system examines the incoming request data and attempts to match the submitted form field names with the corresponding properties of the `Product` model.
+
+For example:
+| Form field | ==> | Product property |
+| - | - | - |
+| Name | -> | product.Name |
+| Price | -> | product.Price |
+| Quantity | -> | product.Quantity |
+| Description | -> | product.Description |
+
+Therefore, we do not have to manually read each form value from the HTTP request.
+
+Instead of writing code such as:
+```C#
+string name = Request.Form["Name"];
+```
+and manually assigning every value to a Product object, MVC performs the binding for us.
+
+**Important distinction:**
+- Model Binding => populates the `Product` object from incoming request data
+- Model Validation => validates that populated model and records validation errors in `ModelState`
+
+**Introducing:**
+- [HttpPost] attribute:
+    - Specifies that this action is intended to handle HTTP POST requests
+    - Allows MVC's action-selection system to identify the appropriate action for that POST request
+    ```html
+    <form asp-action="Create" method="post">
+    ```
+- [ValidateAntiForgeryToken] attribute:
+    - Enables anti-forgery token validation for the action
+    - Anti-forgery protection helps protect state-changing requests, such as creating, editing, or deleting data, against Cross-Site Request Forgery (CSRF) attacks
+    - To review this topic, check my repo ["Music Gear - The controller file"](https://github.com/anmarjarjees/music-gear-tracker/blob/main/MusicGearTracker/Controllers/InstrumentsController.cs)
+    - To learn more, visit ["Microsoft Learning  - Prevent Cross-Site Request"](https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0)
+
+The relationship between the form and controller is:
+```bash
+    - Create.cshtml: <form asp-action="Create" method="post">
+        - HTTP POST /Products/Create
+            - ProductsController:
+                 - [HttpPost] Create(Product product)
+                    - Model Binding
+                        - Product object is populated
+                            - Model Validation
+                                - ModelState.IsValid
+```
+
+#### Model Validation:
+After Model Binding, ASP.NET Core MVC performs model validation using the validation metadata associated with the model.
+
+The validation results are made available through **"ModelState"**
+
+The controller can then check **"ModelState.IsValid"** to determine whether the submitted model passed validation:
+
+```C#
+if (ModelState.IsValid) { 
+    // Save the product...
+}
+```
+
+After finishing a POST operation (Create, edit, delete), the application should normally redirect to another action rather than returning the same view directly which follows the standard web development design pattern **["Post/Redirect/Get (PRG)"](https://en.wikipedia.org/wiki/Post/Redirect/Get)** that we usually use when building any CRUD web application as we did with PHP also. 
+
+**The general progression will be:**
+1. POST => this action receives the form submission
+2. Model Binding => MVC creates/populates the Product parameter
+3. Anti-forgery protection => validate the anti-forgery token for the state-changing POST
+4. Model Validation => check `ModelState.IsValid`
+5. EF Core => save the product to the database
+6. Redirect => follow the Post/Redirect/Get pattern
+
+**First: Refer to the view "Create.cshtml" and review the code/comments**
+
+Now, we can implement the Create Action (POST) in the **ProductsController** by implementing the proper MVC POST pattern:
+1. [HttpPost]
+2. [ValidateAntiForgeryToken]
+3. Product product parameter
+4. Model Binding
+5. ModelState.IsValid
+6. What happens when validation fails
+7. What will happen later when EF Core is added
+
+```C#
+[HttpPost]
+[ValidateAntiForgeryToken]
+public IActionResult Create(Product product)
+{
+    if (!ModelState.IsValid)
+    {
+        return View(product);
+    }
+
+    // Database saving code will be added later...
+
+    return View(product);
+}
+```
+
+**Second: Refer to the view "ProductsController.cs" and review the code/comments: Create POST Action**
+
+### Step 5.4: Edit Actions (GET + POST) *(to be added)*
+### Step 5.5: Delete Actions (GET + POST) *(to be added)*
+## Step 6: Add Entity Framework Core *(to be added)*
 - DbContext
 - Database connection
 - Migrations
 - SQL Server
 
-### Step 7: Implement CRUD functionality *(to be added)*
+## Step 7: Implement CRUD functionality *(to be added)*
 - Create
 - Read
 - Update

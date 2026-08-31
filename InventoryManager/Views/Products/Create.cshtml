@@ -1,0 +1,459 @@
+﻿@*
+    Views/Products/Create.cshtml:
+    *****************************
+    This Razor View corresponds to the Create() GET action inside ProductsController.
+
+    MVC Convention:
+    ***************
+        - ProductsController
+                >> Create() [GET]
+                        >> Views/Products/Create.cshtml
+
+    This page displays the form for entering information for a new Product.
+
+    At this stage:
+    - The form does not contain existing product data.
+    - The form does not save anything to the database.
+    - The POST action will be introduced in the next step.
+
+    Link:  https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms
+*@
+
+@model InventoryManager.Models.Product // The view's model type is "Product" T
+
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Create a New Product</h1>
+    @* 
+    BS class "display-4": 
+    *********************
+    
+    - Is a Bootstrap display heading utility class
+    - This class is provided by Bootstrap. It is NOT an ASP.NET Core MVC Tag Helper or Razor feature
+    - Bootstrap provides display classes for creating headings that are larger than the standard heading sizes
+    - The "display-4" class applies Bootstrap's display-heading styling to this <h1> element
+    - The "display-4" class changes the visual appearance of the heading.
+
+    Link: https://getbootstrap.com/docs/5.3/content/typography/#display-headings
+*@
+</div>
+
+
+<p>Enter the information below to create a new product.</p>
+@*
+    TAG HELPERS:
+    ************
+    Tag Helpers enable server-side code to participate in creating and rendering HTML elements in Razor files.
+
+    In this form we are using several ASP.NET Core MVC Tag Helpers:
+        > Form Tag Helper => <form asp-action="Create">
+        > Label Tag Helper => <label asp-for="Name">
+        > Input Tag Helper => <input asp-for="Name">
+        > Textarea Tag Helper => <textarea asp-for="Description">
+        > Validation Message Tag Helper => <span asp-validation-for="Name">
+        > Validation Summary Tag Helper => <div asp-validation-summary="ModelOnly">
+
+    1) The ASP.NET Core Tag Helper attribute:
+        
+            > asp-action="Create"
+    
+        "asp-action":
+            - Specifies the controller action to which the form should be submitted
+            - The Form Tag Helper uses this information to generate the form's HTML "action" attribute
+            - The browser then submits an "HTTP request" to that URL
+            - The MVC routing/action-selection system determines which action handles the request.
+
+    In this example: 
+        > asp-action="Create"
+
+    corresponds to: 
+        > ProductsController.Create()
+
+    Because this view belongs to "ProductsController", we do not need to specify:
+        > asp-controller="Products"
+
+    when submitting to an action in the current controller.
+
+    Therefore:
+        > <form asp-action="Create" method="post">
+        represents a form that submits to the Create action of the current controller.
+
+    NOTE:
+    *****
+    "asp-action" is NOT the same thing as directly "calling" a C# method.
+
+    It provides routing information to the Form Tag Helper 
+    so that ASP.NET Core can generate the appropriate HTML "action" URL.
+
+    The browser ultimately submits an HTTP request to that generated URL.
+
+
+    2) The HTML attribute "method":
+        > method="post"
+       
+        "method" is a standard HTML attribute of the <form> element.
+        It specifies the HTTP method that the browser uses when submitting the form.
+        
+        > method="post"
+          means that the browser sends the submitted form data using HTTP POST.
+
+      NOTE:
+      *****
+      - GET and POST describe the HTTP request method.
+      - The parameters of an action method describe the data that the particular action needs to receive.
+        
+      POST Request:
+      method="post"
+            >>> browser sends HTTP POST
+                    >>> ASP.NET Core receives the request
+                            >>> [HttpPost] action is selected
+                                    >>> Create(Product product)
+                                            >>> Model Binding populates Product
+      GET Request:
+      method="get"
+            >>> browser sends HTTP GET
+                    >>> ASP.NET Core receives the request
+                            >>> [HttpGet] action is selected
+                                    >>> Create()
+                                            >>> Model Binding populates action parameters, if any
+        
+        > The GET action displays the form.
+        > The POST action will receive the submitted Product data.
+
+    Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro
+    Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms
+    Link: https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.taghelpers
+*@
+
+<form asp-action="Create" method="post">
+    <fieldset>
+        <legend>Product Information</legend>
+
+        @*
+            Validation Summary:
+            *******************
+            The Validation Summary Tag Helper displays validation errors from ModelState.
+
+            It means the summary can display errors that are not associated with a specific property.
+
+            In this example: 
+                > asp-validation-summary="ModelOnly"
+
+            "ModelOnly" => specifies that the validation summary displays only model-level validation errors. 
+            Model-level errors are errors that are not associated with a specific model property.
+
+            For example, a validation error that applies to the Product as a whole rather than specifically to 
+            Name, Price, Description, or Quantity can be displayed in the validation summary. 
+    
+            Property-level validation errors are displayed separately beside their corresponding form fields
+            by using the Validation Message Tag Helper: 
+                > <span asp-validation-for="Name" class="text-danger"></span> 
+        
+            The "asp-validation-summary" attribute supports the following values: 
+                > ModelOnly => Displays only model-level validation errors. 
+                > All => Displays both model-level and property-level validation errors.
+                > None => Does not display validation errors in the validation summary.
+
+            So:
+            - Model-level errors => asp-validation-summary="ModelOnly"
+            - Property-level errors => asp-validation-for="Name", asp-validation-for="Price", etc.
+
+            The Validation Summary Tag Helper is applied to a <div> element.
+
+            Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation
+            Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0#the-validation-summary-tag-helper
+            Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms
+        *@
+        <div asp-validation-summary="ModelOnly" class="text-danger">
+        </div>
+
+        @* 
+        Using the ASP.NET attribute "asp-for" in both elements "label" and "input"
+        instead of using the normal HTML attributes "for" and "id":
+
+        - The Label Tag Helper generates the appropriate HTML label and associates it with the input
+        - The Input Tag Helper generates the appropriate HTML input and its name/id attributes
+        
+        However we can still use "id" attributes for sure if we needed in JS or CSS
+
+        so asp-for ="Name" => Where does "Name" come from?
+        Remember that "Name" is one of the "Product" class fields,
+        so to access this field "Name" which is part of "Product.cs" file which is inside "Models" folder,
+        we need to include it here in this view file,
+        unlike C# code when we use the keyword "using",
+        in Razor views, we use @model InventoryManager.Models.Product
+
+        To summarize:
+        *************
+        asp-for="Name" connects this HTML element to the Name property of our Product model
+
+        Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms
+        *@
+
+        @* 
+        Bootstrap Classes:
+        ******************
+        - class ="mb-3"
+        - class ="form-label"
+        - class ="col-form-label"
+        - class ="form-control"
+
+        We added these two BS classes although they are NOT required,
+        however adding them will for visual enhancements
+
+        Using the BS class "mb-3":
+            > m = margin
+            > b = bottom
+            > 3 = spacing level 3
+        
+        This applies a margin-bottom value to the element.
+
+        In Bootstrap 5.3:
+            > spacing level "3" corresponds to "1 rem" when using Bootstrap's default spacing scale.
+
+        We use "mb-3" to create vertical separation between the individual form-field groups,
+        making the form easier to read and visually organized.
+
+        Link: https://getbootstrap.com/docs/5.3/utilities/spacing/
+
+        Using "form-label" & "col-form-label":
+        ****************************************
+        - form-label => for normal/stacked form:
+            > Used for the standard vertically stacked form layout.
+
+        - col-form-label => for horizontal/grid form:
+            > Used with Bootstrap's grid system for horizontal forms,
+              where the label occupies a grid column alongside the form control.
+        
+        Our current form uses a vertically stacked layout, so we use:
+            > class="form-label"
+
+        If we later change the form to a horizontal/grid layout,
+        "col-form-label" can be used with the appropriate "row" and "col-*" classes.
+
+        Link: https://getbootstrap.com/docs/5.3/forms/layout/
+        Link: https://getbootstrap.com/docs/4.1/migration/#forms-1
+        Link: https://getbootstrap.com/docs/4.1/migration/#forms-1
+        Link: https://getbootstrap.com/docs/4.1/components/forms/#readonly-plain-text
+        Link: https://getbootstrap.com/docs/4.1/components/forms/#form-controls
+        *@
+
+        <div class="mb-3">
+            @* 
+                Using the LabelTagHelper, which uses the Product.Name model metadata 
+                to generate the appropriate HTML label and for attribute. 
+
+                Property-level validation errors are displayed separately
+                beside their corresponding form fields by using:
+                    > asp-validation-for="PropertyName"
+
+                For example:
+                    <span asp-validation-for="Name"></span>
+            *@
+
+            @* 1) Identifying the field: *@
+            <label asp-for="Name" class="form-label"></label>
+
+            @* 2) Creating/binding the input: *@
+            <input asp-for="Name" class="form-control" />
+
+            @* 3) Displaying validation errors for that property: *@
+            <span asp-validation-for="Name" class="text-danger"></span>
+
+            @* 
+            The "asp-validation-for" attribute:
+            ***********************************
+            - It's an ASP.NET Core MVC Validation Message Tag Helper attribute.
+            - It specifies the model property for which the validation message should be displayed.
+            - In this example, "Name" refers to the "Name" property of the "Product" model.
+            - Validation errors for the Name property are displayed inside this <span> element.
+
+            The Tag Helper uses the validation information available in "ModelState"
+            and the validation metadata associated with the model property.
+
+            Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-10.0
+            Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-10.0
+            *@
+        </div>
+
+        @*
+            PRICE FIELD:
+            ************
+            Price is a numeric property in our Product model.
+
+            The Input Tag Helper uses the model property metadata when generating the HTML input
+
+            We will introduce more detailed validation rules for numeric values as the project progresses
+        *@
+
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label"></label>
+
+            <input asp-for="Price" class="form-control" />
+
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        @*
+            DESCRIPTION FIELD:
+            ******************
+            Because Description can contain multiple lines,
+            we use a textarea rather than a single-line <input>.
+
+            asp-for="Description" connects the textarea to Product.Description.
+
+            The Textarea Tag Helper can also generate the appropriate "id" and "name" attributes
+            and use model validation metadata
+        *@
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+
+            @* 
+         NOTE ABOUT HTML5 VALIDATION ATTRIBUTES:
+         ***************************************
+         We do not necessarily need to manually duplicate validation rules in the Razor View,
+         by adding these HTML attributes (conditions):
+         - required
+         - maxlength = "100"
+ 
+         For example, if our Product model contains:
+         
+            [Required]
+            [StringLength(100)]
+            public string Name { get; set; }
+
+         > the validation rules are defined in the model.
+
+         ASP.NET Core MVC's validation system uses this model metadata.
+
+         The Input Tag Helper can then generate the appropriate HTML5 "data-val-*" validation attributes:
+         For example, validation metadata can result in generated attributes such as:
+
+                    data-val="true"
+                    data-val-required="..."
+                    data-val-maxlength="..."
+                    data-val-maxlength-max="100"
+
+         This allows the validation rules to be defined centrally in the model 
+         instead of duplicating the same rules in multiple views.
+
+         NOTE:
+         *****
+         This does NOT mean that HTML5 attributes such as:
+           - required
+           - min
+           - max
+           - step
+           - type
+
+         are forbidden!
+         They can still be appropriate when they describe the HTML control or its browser-level behavior.
+
+         However, we should avoid unnecessarily duplicating the same business/data validation rules in both:
+            1) the Model
+            2) the Razor View
+
+         The model should remain the central place for our application's validation rules.
+        
+         So the summarized idea:
+         ***********************
+         1) Define model validation rules in the model 
+            when those rules describe the validity of the model's data.
+
+        2) Let ASP.NET Core MVC's Tag Helpers use the model metadata
+           to generate the appropriate form markup and validation attributes.
+
+        3) Do not rely on client-side validation alone.
+           Server-side validation remains necessary because the client cannot be trusted.
+
+        This helps avoid unnecessarily duplicating the same validation rules in both the model and the Razor View.
+
+         Link: https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation
+        *@
+        </div>
+
+        @*
+            QUANTITY FIELD:
+            ***************
+            Quantity represents the number of products available in inventory.
+
+            The Input Tag Helper connects this input to Product.Quantity.
+
+            Because Quantity is a numeric .NET property,
+            the Input Tag Helper can determine an appropriate HTML input type 
+            from the model property's type.
+        *@
+        <div class="mb-3">
+            <label asp-for="Quantity" class="form-label"></label>
+            <input asp-for="Quantity" class="form-control" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        @*
+            SUBMIT BUTTON:
+            **************
+            type="submit" is a standard HTML attribute.
+
+            It tells the browser that this button submits the surrounding <form>.
+
+            The form specifies:
+                > method="post"
+
+            Therefore: 
+                Clicking this button causes the browser to submit the form using the "HTTP POST" method
+
+            Bootstrap classes:
+            ******************
+            - btn
+            - btn-primary
+
+            provide the Bootstrap styling for the button.
+
+            Link: https://getbootstrap.com/docs/5.3/components/buttons/
+        *@
+        <button type="submit" class="btn btn-primary">
+            Create Product
+        </button>
+    </fieldset>
+</form>
+@*
+    ABOUT CLIENT-SIDE VALIDATION:
+    *****************************
+
+    Besides "server-side validation", ASP.NET Core MVC can also support "client-side validation".
+
+    The Input and Validation Tag Helpers generate the validation-related HTML attributes and markup.
+
+    Client-side validation requires the appropriate client-side validation JavaScript libraries.
+
+    The default ASP.NET Core MVC project template 
+    commonly provides a "_ValidationScriptsPartial" partial view
+    containing the required client-side validation scripts.
+
+     It can be included in this view using:
+
+        @section Scripts {
+            <partial name="_ValidationScriptsPartial" />
+        }
+
+     The layout must contain:
+
+        @await RenderSectionAsync("Scripts", required: false)
+
+    so that the "Scripts"" section from this view can be rendered by the layout.
+
+    NOTE:
+    *****
+    Client-side validation is an additional user-experience feature.
+
+    Server-side validation remains necessary 
+    because the server must never trust data simply because it passed validation in the browser.
+*@
+
+
